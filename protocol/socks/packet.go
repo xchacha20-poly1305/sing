@@ -69,7 +69,11 @@ func (c *AssociatePacketConn) WriteTo(p []byte, addr net.Addr) (n int, err error
 	if err != nil {
 		return
 	}
-	return c.conn.Write(buffer.Bytes())
+	n, err = c.conn.Write(buffer.Bytes())
+	if err == nil {
+		n = len(p)
+	}
+	return
 }
 
 func (c *AssociatePacketConn) ReadPacket(buffer *buf.Buffer) (destination M.Socksaddr, err error) {
