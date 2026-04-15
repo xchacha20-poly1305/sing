@@ -41,6 +41,12 @@ func (c *AssociatePacketConn) ReadFrom(p []byte) (n int, addr net.Addr, err erro
 	if err != nil {
 		return
 	}
+	if remoteAddr := M.SocksaddrFromNet(c.conn.RemoteAddr()).Unwrap(); remoteAddr.IsValid() {
+		if remoteAddr != c.remoteAddr {
+			err = E.New("socks5: invalid remote address")
+			return
+		}
+	}
 	if n < 3 {
 		return 0, nil, ErrInvalidPacket
 	}
